@@ -1,36 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BorrowingSystem.Data;
+using BorrowingSystem.Models.UserAccount;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace BorrowingSystem.Controllers.Admin
 {
     public class AdminController : Controller
     {
-        // GET: /admin/login
+        private readonly ApplicationDbContext _context;
+
+        public AdminController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet("admin/login")]
         public IActionResult Login()
         {
-            return View(); // This will look for Views/Admin/Login.cshtml
+            return View(new User()); // Pass empty User model
         }
 
-        // POST: /admin/login
         [HttpPost("admin/login")]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login(User model)
         {
-            // TODO: Replace this with database validation
-            if (username == "admin" && password == "123")
+            var user = _context.Users
+                .FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
+
+            if (user != null && user.Active)
             {
-                // Redirect to dashboard on success
                 return RedirectToAction("Dashboard");
             }
 
             ViewBag.Error = "Invalid username or password";
-            return View();
+            return View(model);
         }
 
-        // GET: /admin/dashboard
         [HttpGet("admin/dashboard")]
         public IActionResult Dashboard()
         {
-            return View(); // This will look for Views/Admin/Dashboard.cshtml
+            return View();
         }
     }
 }
