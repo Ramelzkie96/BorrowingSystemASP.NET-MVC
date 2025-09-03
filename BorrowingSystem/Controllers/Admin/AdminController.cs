@@ -28,12 +28,15 @@ namespace BorrowingSystem.Controllers.Admin
 
             if (user != null && user.Active)
             {
-                return RedirectToAction("Dashboard");
+                ViewBag.Success = "Login successful!";
+                return View(model); // stay on same page with alert
+                                    // Or RedirectToAction("Dashboard") if you want to go to dashboard
             }
 
             ViewBag.Error = "Invalid username or password";
             return View(model);
         }
+
 
         [HttpGet("admin/dashboard")]
         public IActionResult Dashboard()
