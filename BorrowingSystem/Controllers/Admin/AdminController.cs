@@ -17,7 +17,7 @@ namespace BorrowingSystem.Controllers.Admin
         [HttpGet("admin/login")]
         public IActionResult Login()
         {
-            return View(new User()); // Pass empty User model
+            return View(new User()); // show empty login form
         }
 
         [HttpPost("admin/login")]
@@ -28,15 +28,14 @@ namespace BorrowingSystem.Controllers.Admin
 
             if (user != null && user.Active)
             {
-                ViewBag.Success = "Login successful!";
-                return View(model); // stay on same page with alert
-                                    // Or RedirectToAction("Dashboard") if you want to go to dashboard
+                // ✅ Redirect to Admin Dashboard after successful login
+                return RedirectToAction("Dashboard", "Admin");
             }
 
+            // ❌ Show error message if login failed
             ViewBag.Error = "Invalid username or password";
             return View(model);
         }
-
 
         [HttpGet("admin/dashboard")]
         public IActionResult Dashboard()
